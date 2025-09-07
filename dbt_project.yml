@@ -37,6 +37,28 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   my_new_project:
-    # Applies to all files under models/example/
-    example:
+    +materialized: table
+    staging: { +materialized: view }
+    intermediate: { +materialized: table }
+    marts:
       +materialized: table
+      +partition_by: {field: event_date, data_type: date}
+      +cluster_by: ['wallet_id']
+
+seeds:
+  my_new_project:          # <-- must match the 'name:' above
+    seed_events:
+      +column_types:
+        wallet_id: STRING
+        ts: TIMESTAMP      # <-- fix: TIMESTAMP, not DATETIME
+        event_type: STRING
+        token: STRING
+        amount: NUMERIC
+        bonus_id: STRING
+        tx_hash: STRING
+    seed_wallets:
+      +column_types:
+        wallet_id: STRING
+        address: STRING
+        acquisition_channel: STRING
+        region: STRING
