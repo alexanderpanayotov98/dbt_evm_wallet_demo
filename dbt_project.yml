@@ -37,13 +37,16 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   my_new_project:
-    +materialized: table
-    staging: { +materialized: view }
-    intermediate: { +materialized: table }
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: table
     marts:
       +materialized: table
-      +partition_by: {field: event_date, data_type: date}
-      +cluster_by: ['wallet_id']
+      # no default +partition_by here
+      mart_igaming_kpis:
+        +partition_by: {field: event_date, data_type: date}
+        +cluster_by: ['event_date']
 
 seeds:
   my_new_project:          # <-- must match the 'name:' above
